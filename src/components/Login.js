@@ -1,4 +1,5 @@
 import React from 'react';
+import { authenticateUser } from '../api';
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -10,6 +11,7 @@ export default class Login extends React.Component {
 
   sendLogin(user, password) {
     console.log(user, password);
+    authenticateUser(user, password);
   }
 
   validate(e) {
