@@ -1,9 +1,9 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { validateUser } from './api.js';
-const isLoggedIn = validateUser();
+import { validateUserToken } from './auth.js';
 
 export default function ProtectedRoute({ component: Component, ...rest}) {
+  const isLoggedIn = validateUserToken();
   return (
     <Route 
       {...rest}

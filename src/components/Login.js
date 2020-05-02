@@ -1,5 +1,6 @@
 import React from 'react';
-import { authenticateUser } from '../api';
+import { Redirect } from 'react-router-dom';
+import { authenticateUser, validateUserToken } from '../auth';
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -7,11 +8,14 @@ export default class Login extends React.Component {
     this.usernameInput = React.createRef();
     this.passwordInput = React.createRef();
     this.validate = this.validate.bind(this);
+    const shouldRedirect = validateUserToken();
+    this.state = { shouldRedirect };
   }
 
-  sendLogin(user, password) {
-    console.log(user, password);
-    authenticateUser(user, password);
+  async sendLogin(user, password) {
+    await authenticateUser(user, password);
+    const shouldRedirect = validateUserToken();
+    this.setState({ shouldRedirect });
   }
 
   validate(e) {
@@ -21,14 +25,21 @@ export default class Login extends React.Component {
   }
 
   render() {
-    return <div>
+    const shouldRedirect = this.state.shouldRedirect;
+    return (
       <div>
-        <input type="text" name="username" ref={this.usernameInput}></input>
+        { shouldRedirect ? (<Redirect to="/home" />) :
+          (<div>
+            <div>
+              <input type="text" name="username" ref={this.usernameInput}></input>
+            </div>
+            <div>
+              <input type="password" name="password" ref={this.passwordInput}></input>
+            </div>
+            <button onClick={this.validate}>Login</button>
+          </div>)
+        }
       </div>
-      <div>
-        <input type="password" name="password" ref={this.passwordInput}></input>
-      </div>
-      <button onClick={this.validate}>Login</button>
-    </div>
+    )
   }
 }
