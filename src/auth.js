@@ -1,7 +1,8 @@
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 
-const accessTokenSecret = process.env.REACT_APP_TOKEN_SECRET;
+export const accessTokenSecret = process.env.REACT_APP_TOKEN_SECRET;
+export const tokenSessionStorageKey = 'fasebookToken';
 
 export const authenticateUser = (username, password) => {
   // send username and password to db
@@ -13,7 +14,7 @@ export const authenticateUser = (username, password) => {
         return false;
       }
       console.log(resp);
-      sessionStorage.setItem('fasebookToken', resp.data);
+      sessionStorage.setItem(tokenSessionStorageKey, resp.data);
       // here need to figure out resonses for unsuccessful logins
       return true;
     })
@@ -23,7 +24,7 @@ export const authenticateUser = (username, password) => {
   }
 
 export const validateUserToken = function() {
-  const t = sessionStorage.getItem('fasebookToken');
+  const t = sessionStorage.getItem(tokenSessionStorageKey);
   try {
     jwt.verify(t, accessTokenSecret);
     return true;
