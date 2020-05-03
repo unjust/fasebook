@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import { authenticateUser, validateUserToken } from '../auth';
+import { authenticateUser, validateUserToken } from '../api/auth';
 
 export default class Login extends React.Component {
   constructor(props) {

@@ -9,6 +9,22 @@ const dotenv = require('dotenv');
 
 const DB = 'fasebook';
 
+const addUsers = function() {
+  const users = [
+    {
+      username: 'ivy',
+      password: 'ivy'
+    },
+    {
+      username: 'ladyGaga',
+      password: 'lab'
+    }
+  ];
+  db.bulk( { docs: users }).then((body) => {
+    console.log('users added to db', body);
+  });
+}
+
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
 }
@@ -22,34 +38,17 @@ async function setupDatabase() {
     const success = await nano.db.create('fasebook').catch((e) => {
       console.log('create db error', e);
     });
-    console.log(success);
+    console.log('db created', success);
+    addUsers();
   }
 }
 
 setupDatabase();
-
 const db = nano.use(DB);
-
-const users = [
-  {
-    username: 'ivy',
-    password: 'ivy'
-  },
-  {
-    username: 'ivy2',
-    password: 'ivy'
-  }
-];
-
-const addUsers = function() {
-  db.insert( { docs: users });
-}
-addUsers();
-
 const app = express();
 app.listen(process.env.PORT || 8080);
 // app.use(express.static(path.join(__dirname, 'public')));
-// app.all('*', requireAuthentication, loadUser)
+// app.all('*', requireAuthentication., loadUser)
 app.use(bodyParser.json());
 
 app.get('/ping', function (req, res) {
@@ -60,6 +59,7 @@ app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'public', 'yo.html'));
 });
 
+
 app.post('/api/auth', function(req, res) {
   const { username, password } = req.body;
   const q = {
@@ -68,22 +68,47 @@ app.post('/api/auth', function(req, res) {
       password
     }
   }
-  console.log(username, password);
-  const user = db.find(q);
-  if (user) {
-    const accessToken = jwt.sign( { username }, accessTokenSecret);
-    res.json(accessToken);
-  } else {
-    res.send('Username or password incorrect');
-  }
+  db.find(q).then((resp) => {
+    if (resp.docs.length) {
+      const { _id } = resp.docs[0];
+      const accessToken = jwt.sign( { _id }, accessTokenSecret);
+      res.json({ userId: _id, accessToken });
+    } else {
+      res.json({ error: 'username or password incorrect'});
+    }
+  });
 });
 
-app.get('/api/posts', 
+app.post('/api/post', 
   jwtMiddleware( { secret: accessTokenSecret }),
   function(req, resp) {
-    if (req.user) {
-      console.log('valid');
-      resp.sendStatus(200);
+    const { post, userId } = req.body;
+    if (req.user && req.user._id === userId) {
+      const postedDate = Date.now();
+      const type = 'post';
+      db.insert({ post, type, postedDate, userId }, (body) => {
+        resp.sendStatus(200);
+      });
+    }
+  }
+);
+
+app.get('/api/posts/:userId', 
+  jwtMiddleware( { secret: accessTokenSecret }),
+  function(req, resp) {
+    const { userId } = req.params;
+    if (req.user && userId) { // we'd also check for permissions here
+      const q = {
+        selector: {
+          userId,
+          type: 'post'
+        },
+        fields: [ 'postedDate', 'post', '_id' ]
+        // sort: [{ 'postedDate': 'asc'}]
+      };
+      db.find(q).then((res) => {
+        resp.json(res.docs);
+      }).catch((err) => console.log(err));
     } else {
       resp.sendStatus(401);
     }

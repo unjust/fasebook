@@ -8,13 +8,14 @@ export const authenticateUser = (username, password) => {
   // send username and password to db
   // wait for response with jwt or not
   // redirect
-  return axios.post('/api/auth', { username, password})
+  return axios.post('/api/auth', { username, password })
     .then((resp) => {
       if (resp.data && resp.data.error) {
         return false;
       }
       console.log(resp);
-      sessionStorage.setItem(tokenSessionStorageKey, resp.data);
+      sessionStorage.setItem('userId', resp.data.userId);
+      sessionStorage.setItem(tokenSessionStorageKey, resp.data.accessToken);
       // here need to figure out resonses for unsuccessful logins
       return true;
     })
@@ -23,8 +24,10 @@ export const authenticateUser = (username, password) => {
     })
   }
 
+export const getAuthToken = () => sessionStorage.getItem(tokenSessionStorageKey);
+
 export const validateUserToken = function() {
-  const t = sessionStorage.getItem(tokenSessionStorageKey);
+  const t = getAuthToken();
   try {
     jwt.verify(t, accessTokenSecret);
     return true;

@@ -2,7 +2,7 @@ import {
   accessTokenSecret,
   tokenSessionStorageKey,
   authenticateUser,
-  validateUserToken } from '../auth';
+  validateUserToken } from '../api/auth';
 import jwt from 'jsonwebtoken';
 
 describe.only('auth', () => {

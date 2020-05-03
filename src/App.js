@@ -10,7 +10,10 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
-        <ProtectedRoute path="/home" component={Home} />
+        <ProtectedRoute 
+          path="/home" 
+          render={(props) => <Home {...props} userId={sessionStorage.getItem('userId')} />}
+        />
         <Route path="/login" component={Login} />
       </Switch>
     </BrowserRouter>
