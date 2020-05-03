@@ -4,26 +4,6 @@ import jwt from 'jsonwebtoken';
 export const accessTokenSecret = process.env.REACT_APP_TOKEN_SECRET;
 export const tokenSessionStorageKey = 'fasebookToken';
 
-export const authenticateUser = (username, password) => {
-  // send username and password to db
-  // wait for response with jwt or not
-  // redirect
-  return axios.post('/api/auth', { username, password })
-    .then((resp) => {
-      if (resp.data && resp.data.error) {
-        return false;
-      }
-      console.log(resp);
-      sessionStorage.setItem('userId', resp.data.userId);
-      sessionStorage.setItem(tokenSessionStorageKey, resp.data.accessToken);
-      // here need to figure out resonses for unsuccessful logins
-      return true;
-    })
-    .catch((e) => {
-      console.log(e);
-    })
-  }
-
 export const getAuthToken = () => sessionStorage.getItem(tokenSessionStorageKey);
 
 export const validateUserToken = function() {
@@ -36,3 +16,30 @@ export const validateUserToken = function() {
     return false;
   }
 }
+
+export const authData = {
+  store: (userId, accessToken) => {
+    sessionStorage.setItem('userId', userId);
+    sessionStorage.setItem(tokenSessionStorageKey, accessToken); 
+    console.log(sessionStorage.getItem(tokenSessionStorageKey));  
+  }
+};
+
+export const authenticateUser = (username, password) => {
+  axios.post('/api/auth', { username, password })
+    .then((resp) => {
+      // TODO move this to catch?
+      if (resp.data && resp.data.error) {
+        return false;
+      }
+      const { userId, accessToken } = resp.data;
+      authData.store(userId, accessToken);
+      // TODO need to figure out responses for unsuccessful logins
+      return true;
+    })
+    .catch((e) => {
+      console.log(e);
+    })
+  }
+
+
