@@ -1,9 +1,13 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const jwtMiddleware = require('express-jwt');
-const path = require('path');
 const bodyParser = require('body-parser');
-const { getDatabase, findDoc } = require('./dbUtils');
+
+const { 
+  getDatabaseInstance,
+  findDocs, 
+  updateDoc 
+} = require('./dbUtils');
 
 const app = express();
 app.listen(process.env.PORT || 8080);
@@ -14,19 +18,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 
-const db = getDatabase();
-
-// app.use(express.static(path.join(__dirname, 'public')));
-// app.all('*', requireAuthentication., loadUser)
 app.use(bodyParser.json());
-
-app.get('/ping', function (req, res) {
-  return res.send('pong');
- });
-
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'yo.html'));
-});
 
 app.post('/api/auth', function(req, res) {
   const { username, password } = req.body;
@@ -36,7 +28,7 @@ app.post('/api/auth', function(req, res) {
       password
     }
   }
-  findDoc(q).then((docs) => {
+  findDocs(q).then((docs) => {
     if (docs.length) {
       const { _id } = docs[0];
       const accessToken = jwt.sign( { _id }, accessTokenSecret);
@@ -54,6 +46,7 @@ app.post('/api/post',
     if (req.user && req.user._id === userId) {
       const postedDate = Date.now();
       const type = 'post';
+      const db = getDatabaseInstance();
       db.insert({ post, type, postedDate, userId }, (body) => {
         resp.sendStatus(200);
       });
@@ -66,11 +59,10 @@ app.put('/api/post',
   function(req, resp) {
     const { post, userId, postId } = req.body;
     if (req.user && req.user._id === userId) {
-      const postedDate = Date.now();
+      const editDate = Date.now();
       const type = 'post';
-      db.insert({ post, type, postedDate, userId }, (body) => {
-        resp.sendStatus(200);
-      });
+      updateDoc({ selector: { _id: postId, type }}, { post, editDate })
+        .then(() => resp.status(200).send({ post }));
     }
   }
 );
@@ -86,18 +78,12 @@ app.get('/api/posts/:userId',
           type: 'post'
         },
         fields: [ 'postedDate', 'post', '_id' ]
-        // sort: [{ 'postedDate': 'asc'}]
       };
-
-      db.find(q).then((res) => {
-        resp.json(res.docs);
-      }).catch((err) => console.log(err));
+      findDocs(q).then((docs) => {
+        resp.json(docs);
+      });
     } else {
       resp.sendStatus(401);
     }
   }
 );
-
-module.exports = {
-  app
-};
