@@ -6,6 +6,14 @@ export const tokenSessionStorageKey = 'fasebookToken';
 
 export const getAuthToken = () => sessionStorage.getItem(tokenSessionStorageKey);
 
+export const authData = {
+  store: (userId, accessToken) => {
+    sessionStorage.setItem('userId', userId);
+    sessionStorage.setItem(tokenSessionStorageKey, accessToken); 
+    console.log(sessionStorage.getItem(tokenSessionStorageKey));  
+  }
+};
+
 export const validateUserToken = function() {
   const t = getAuthToken();
   try {
@@ -17,25 +25,17 @@ export const validateUserToken = function() {
   }
 }
 
-export const authData = {
-  store: (userId, accessToken) => {
-    sessionStorage.setItem('userId', userId);
-    sessionStorage.setItem(tokenSessionStorageKey, accessToken); 
-    console.log(sessionStorage.getItem(tokenSessionStorageKey));  
-  }
-};
-
 export const authenticateUser = (username, password) =>
   axios.post('/api/auth', { username, password })
     .then((resp) => {
       // TODO move this to catch?
       if (resp.data && resp.data.error) {
-        return false;
+        return 'Usario o clave estan incorrectos';
       }
       const { userId, accessToken } = resp.data;
       authData.store(userId, accessToken);
       // TODO need to figure out responses for unsuccessful logins
-      return true;
+      return;
     })
     .catch((e) => {
       console.log(e);

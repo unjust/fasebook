@@ -1,7 +1,6 @@
 @import 'normalize';
+@import 'colors';
 
-$dark-grey: #151818;
-$link-blue: #07396f;
 
 body {
   font-family: 'Helvetica', 'Arial', sans-serif;
@@ -10,11 +9,11 @@ body {
 }
 
 #main-container {
+  width: auto;
   margin: 1rem;
 }
 
-@media 
-  (min-device-width: 800px) { 
+@media screen and (min-width: 800px) { 
   #main-container {
     width: 800px;
     margin-left: auto;
@@ -34,7 +33,7 @@ button {
   text-transform: uppercase;
   letter-spacing:2px;
 
-  &.link {
+  &.link--controls {
     border: none;
     background: none;
     text-decoration: underline;
@@ -42,11 +41,38 @@ button {
     text-transform: initial;
     font-size: inherit;
     letter-spacing: inherit;
-    padding:0;
+    padding:0 .5rem;
   }
+}
+
+.margin--vert {
+  margin: 1rem 0;
 }
 
 .margin--bottom {
   margin-bottom: 1rem;
 }
+
+textarea {
+  width: 100%;
+  height: 4rem;
+  border: $grey 1px solid;
+}
+
+input[type='text'], input[type='password'] {
+  width: 80%;
+  height: 2rem;
+  border: $grey 1px solid;
+  border-radius: 3px;
+}
+
+label {
+  display: block;
+}
+.text--error {
+  color: red;
+  font-size: 1rem;
+  line-height: 2;
+}
+
 
