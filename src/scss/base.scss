@@ -1,0 +1,52 @@
+@import 'normalize';
+
+$dark-grey: #151818;
+$link-blue: #07396f;
+
+body {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-size:1.4rem;
+  color: $dark-grey;
+}
+
+#main-container {
+  margin: 1rem;
+}
+
+@media 
+  (min-device-width: 800px) { 
+  #main-container {
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+link {
+  font-size: auto;
+}
+
+button {
+  padding: 1rem 2rem;
+  color: white;
+  background-color: $link-blue;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing:2px;
+
+  &.link {
+    border: none;
+    background: none;
+    text-decoration: underline;
+    color: $link-blue;
+    text-transform: initial;
+    font-size: inherit;
+    letter-spacing: inherit;
+    padding:0;
+  }
+}
+
+.margin--bottom {
+  margin-bottom: 1rem;
+}
+

@@ -1,10 +1,8 @@
 import React from 'react';
-// import logo from './logo.svg';
 import Login from './components/Login';
-import Home from './components/Home';
+import ProfilePage from './components/ProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { Switch, Route, BrowserRouter } from 'react-router-dom';
-import './App.css';
 
 function App() {
   return (
@@ -12,7 +10,9 @@ function App() {
       <Switch>
         <ProtectedRoute 
           path="/home" 
-          render={(props) => <Home {...props} userId={sessionStorage.getItem('userId')} />}
+          render={(props) =>
+            <ProfilePage {...props} isOwner userId={sessionStorage.getItem('userId')} />
+          }
         />
         <Route path="/login" component={Login} />
       </Switch>

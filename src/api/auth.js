@@ -25,7 +25,7 @@ export const authData = {
   }
 };
 
-export const authenticateUser = (username, password) => {
+export const authenticateUser = (username, password) =>
   axios.post('/api/auth', { username, password })
     .then((resp) => {
       // TODO move this to catch?
@@ -40,6 +40,6 @@ export const authenticateUser = (username, password) => {
     .catch((e) => {
       console.log(e);
     })
-  }
+
 
 

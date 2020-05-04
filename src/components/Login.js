@@ -12,10 +12,12 @@ export default class Login extends React.Component {
     this.state = { shouldRedirect };
   }
 
-  async sendLogin(user, password) {
-    await authenticateUser(user, password);
-    const shouldRedirect = validateUserToken();
-    this.setState({ shouldRedirect });
+  sendLogin(user, password) {
+    authenticateUser(user, password).then(() => {
+      const shouldRedirect = validateUserToken();
+      this.setState({ shouldRedirect })
+    });
+    // handle user and password
   }
 
   validate(e) {
