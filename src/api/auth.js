@@ -6,6 +6,7 @@ export const tokenSessionStorageKey = 'fasebookToken';
 
 export const getAuthToken = () => sessionStorage.getItem(tokenSessionStorageKey);
 
+// organized this way for testing purposes
 export const authData = {
   store: (userId, accessToken) => {
     sessionStorage.setItem('userId', userId);

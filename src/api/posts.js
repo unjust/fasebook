@@ -9,8 +9,6 @@ const instance = () =>
       headers: { Authorization: `Bearer ${getAuthToken()}`}
     });
 
-
-
 export const getPosts = (userId) => 
   instance().get(`/api/posts/${userId}`)
     .then((resp) => {
@@ -29,7 +27,15 @@ export const savePost = (userId, postContent) =>
     });
 
 export const editPost = (userId, postId, postContent) =>
-    instance().put('/api/post', { post: postContent, userId, postId })
+  instance().put('/api/post', { post: postContent, userId, postId })
+    .then((resp) => {
+      return resp.data;
+    }).catch((resp) => {
+      return resp.error;
+    });
+
+export const deletePost = (userId, postId) =>
+  instance().delete(`/api/post/${postId}/${userId}`)
     .then((resp) => {
       return resp.data;
     }).catch((resp) => {
