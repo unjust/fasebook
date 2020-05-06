@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const jwtMiddleware = require('express-jwt');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const { 
   getDatabaseInstance,
@@ -10,7 +11,6 @@ const {
 } = require('./dbUtils');
 
 const app = express();
-app.listen(process.env.PORT || 8080);
 
 if (process.env.NODE_ENV !== 'production') {
   const dotenv = require('dotenv');
@@ -19,6 +19,28 @@ if (process.env.NODE_ENV !== 'production') {
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 
 app.use(bodyParser.json());
+
+// const publicPath = path.join(__dirname, '..', 'public');
+// console.log(publicPath);
+// app.use(express.static(publicPath));
+
+// app.get('*', (req, res) => {
+//    res.sendFile(path.join(publicPath, 'index.html'));
+// });
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(__dirname));
+  app.use(express.static(path.join(__dirname, 'build')));
+ 
+  app.get('/*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  });
+}
+
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+   console.log('Server is up!');
+});
 
 app.post('/api/auth', function(req, res) {
   const { username, password } = req.body;

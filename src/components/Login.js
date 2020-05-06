@@ -52,6 +52,7 @@ export default class Login extends React.Component {
       <div>
         { shouldRedirect ? (<Redirect to="/home" />) :
           (<div className='card'>
+            <h1>Fasebook</h1>
             <div className='margin--vert' >
               <label htmlFor="username">Usario</label>
               <input type="text" name="username" ref={this.usernameInput}></input>
