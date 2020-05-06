@@ -63,32 +63,8 @@ const seedUsers = function(dbName) {
   });
 }
 
-// async function initDatabase() {
-//   let response;
-//   try {
-//     response = await nano.db.list();
-//   } catch(e) {
-//     console.log('nano db list failed', e);
-//   }
-
-//   if (response.indexOf(DB_NAME) === -1) {
-//     try {
-//       await nano.db.create(DB_NAME);
-//       seedUsers(DB_NAME);
-//       setDatabaseInstance()
-//     } catch(e) {
-//       console.log('db create failed', e);
-//     }
-//   } else {
-//     setDatabaseInstance();
-//   }
-// }
-// initDatabase();
-
-
 const findDocs = function(q) {
   const db = facebookDB.getInstance();
-  console.log('find with q', q, db);
   return db.find(q)
     .then((res) => res.docs)
     .catch((err) => {
@@ -99,18 +75,21 @@ const findDocs = function(q) {
 
 const updateDoc = async function(q, update) {
   const db = facebookDB.getInstance();
-  const doc = await findDocs(q); // hope its just one
-  const updatedDoc = Object.assign(doc[0], update);
-  db.insert(updatedDoc)
-    .then((res) => {
-      console.log('return from updated doc', res)
+  console.log("qquery", q);
+  try {
+    const result = await db.find(q);
+    const updatedDoc = Object.assign(result.docs[0], update);
+    db.insert(updatedDoc, (res) => {
+      console.log('return from updated doc', res);
       return res;
-    })
-    .catch((err) => {
-      console.log(err);
-      return { error: 'a problem happened with updating'};
+    }).catch((err) => {
+      console.log('error inserting update', updatedDoc);
     });
-};
+  } catch(err) {
+    console.log('error finding and updating', err);
+    return;
+  }
+}
 
 module.exports = {
   findDocs,

@@ -28,15 +28,17 @@ app.post('/api/auth', function(req, res) {
       password
     }
   }
-  findDocs(q).then((docs) => {
-    if (docs.length) {
-      const { _id } = docs[0];
-      const accessToken = jwt.sign( { _id }, accessTokenSecret);
-      res.json({ userId: _id, accessToken });
-    } else {
-      res.json({ error: 'username or password incorrect'});
-    }
-  });
+  findDocs(q)
+    .then((docs) => {
+      if (docs.length) {
+        const { _id } = docs[0];
+        const accessToken = jwt.sign( { _id }, accessTokenSecret);
+        res.json({ userId: _id, accessToken });
+      } else {
+        res.json({ error: 'username or password incorrect'});
+      }
+    })
+    .catch((err) => console.log("error"));
 });
 
 app.post('/api/post', 
@@ -44,12 +46,18 @@ app.post('/api/post',
   function(req, resp) {
     const { post, userId } = req.body;
     if (req.user && req.user._id === userId) {
-      const postedDate = Date.now();
-      const type = 'post';
       const db = getDatabaseInstance();
-      db.insert({ post, type, postedDate, userId }, (body) => {
-        resp.sendStatus(200);
-      });
+      const newPost = { 
+        type: 'post',
+        post,
+        postedDate: Date.now(), 
+        userId 
+      };
+      db.insert(newPost)
+        .then((body) => {
+          resp.status(200).send({ _id: body.id, ...newPost});
+        })
+        .catch((err) => console.log(err));
     }
   }
 );
@@ -61,8 +69,31 @@ app.put('/api/post',
     if (req.user && req.user._id === userId) {
       const editDate = Date.now();
       const type = 'post';
-      updateDoc({ selector: { _id: postId, type }}, { post, editDate })
+      updateDoc(
+        { selector: { _id: postId, type }}, 
+        { post, editDate })
         .then(() => resp.status(200).send({ post }));
+    } else {
+      resp.status(401);
+    }
+  }
+);
+
+app.delete('/api/post/:postId/:userId', 
+  jwtMiddleware( { secret: accessTokenSecret }),
+  function(req, resp) {
+    const { postId, userId } = req.params;
+    if (req.user && req.user._id === userId) {
+      const q = { selector: { _id: postId, type: 'post' }};
+      const update = { _deleted: true };
+      updateDoc(q, update).then((res) => {
+        resp.status(200).send(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    } else {
+      resp.status(401);
     }
   }
 );
@@ -75,9 +106,11 @@ app.get('/api/posts/:userId',
       const q = {
         selector: {
           userId,
-          type: 'post'
+          type: 'post',
+          postedDate: { $gt: null }
         },
-        fields: [ 'postedDate', 'post', '_id' ]
+        fields: [ 'postedDate', 'post', '_id' ],
+        sort: [{'postedDate': 'desc' }],
       };
       findDocs(q).then((docs) => {
         resp.json(docs);
