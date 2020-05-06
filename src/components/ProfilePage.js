@@ -1,5 +1,5 @@
 import React from 'react';
-import { getPosts, savePost, editPost } from '../api/posts'
+import * as postsApi from '../api/posts';
 import Post from './Post';
 import '../scss/profilePage.scss';
 
@@ -10,35 +10,46 @@ export default class ProfilePage extends React.Component {
     this.handleSavePost = this.handleSavePost.bind(this);
     this.handleEditPost = this.handleEditPost.bind(this);
     this.handleDeletePost = this.handleDeletePost.bind(this);
-    this.dateFormatter = new Intl.DateTimeFormat('es', { year: 'numeric', month: 'short', day: 'numeric' });
     this.state = { posts: [] };
   }
 
   componentDidMount() {
     // call api for current posts
-    getPosts(this.props.userId)
+    postsApi.getPosts(this.props.userId)
       .then((posts) => {
-        posts.forEach((p) => {
-          // const [{ value: m },,{ value: d },,{ value: y }] = this.dateFormatter.formatToParts(p.postedDated);
-          // console.log(this.dateFormatter.formatToParts(p.postedDated));
-          const date = this.dateFormatter.format(p.postedDated);
-          p.formattedPostDate = date;
-          return p;
-        })
         this.setState({ posts })
       });
   }
 
   handleSavePost() {
-    savePost(this.props.userId, this.postTextInput.current.value);
+    postsApi.savePost(this.props.userId, this.postTextInput.current.value)
+      .then((savedPost) => {
+        this.postTextInput.current.value = '';
+        const posts = [savedPost, ...this.state.posts];
+        this.setState({ posts });
+      })
+      .catch(() => {
+        alert('an error ocurred');
+      });
   }
 
   handleEditPost(postId, newText) {
-    editPost(this.props.userId, postId, newText);
+    postsApi.editPost(this.props.userId, postId, newText)
+      .then()
+      .catch(() => {
+        alert('an error ocurred');
+      });
   }
 
-  handleDeletePost() {
-
+  handleDeletePost(postId) {
+    postsApi.deletePost(this.props.userId, postId)
+      .then(() => {
+        const posts = this.state.posts.filter((p) => p._id !== postId);
+        this.setState({ posts });
+      })
+      .catch(() => {
+        alert('an error ocurred');
+      });
   }
   
   renderPosts() {
@@ -75,7 +86,6 @@ export default class ProfilePage extends React.Component {
             name='postContent'
             placeholder='Que quieres compartir?'
             className='margin--bottom'></textarea>
-        
           <button 
             className='align--right' 
             onClick={this.handleSavePost}>POST</button>
