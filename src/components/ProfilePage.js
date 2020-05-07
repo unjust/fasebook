@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as postsApi from '../api/posts';
 import Post from './Post';
-import '../scss/profilePage.scss';
 
 export default class ProfilePage extends React.Component {
   constructor(props) {
@@ -35,7 +34,13 @@ export default class ProfilePage extends React.Component {
   handleEditPost(postId, newText) {
     postsApi.editPost(this.props.userId, postId, newText)
       // eslint-disable-next-line no-console
-      .then(() => console.log('didnt implement'))
+      .then(() => {
+        const posts = [...this.state.posts];
+        const post = posts.filter((p) => p.id === postId);
+        debugger
+        post[0].post = newText;
+        this.setState({ posts });
+      })
       .catch(() => {
         // eslint-disable-next-line no-alert
         alert('an error ocurred');
@@ -62,37 +67,46 @@ export default class ProfilePage extends React.Component {
       );
       return nodeArr;
     }, []);
-    return <div>{nodes}</div>;
+    return nodes;
   }
 
   render() {
     return (
-      <div>
-        <div className='card'>
+      <div className='page'>
+        <div className='card--borderless'>
           <div id='profile-head' className='flex'>
             <div className='flex-item--shrink'>
               <img className='img--thumbnail'
               src="https://scontent-bos3-1.xx.fbcdn.net/v/t1.0-9/39992261_1780642188639098_3104100502657302528_n.jpg?_nc_cat=103&_nc_sid=85a577&_nc_ohc=PeMsRB9nnxwAX_kIRHZ&_nc_ht=scontent-bos3-1.xx&oh=898a95c20b993199c04c7a53325f3f5c&oe=5ED4FF45"
               alt='your fase' />
             </div>
-            <h1 className='flex-item'>CRISTIAN CASTRO</h1>
+            <div className='flex-item'>
+              <h1>Cristian Castro</h1>
+              <span className="display--block">Joined 2001</span>
+              <p className="display--block text--muted">Azul, hoy miro al cielo y en ti puedo ver
+                La estrella que siempre soñé</p>
+            </div>
           </div>
         </div>
       { this.props.isOwner &&
-        <div className='card flex--column'>
-            <textarea
-              ref={this.postTextInput}
-              name='postContent'
-              placeholder='Que quieres compartir?'
-              className='margin--bottom'
-              onChange={(e) => this.setState({ enablePost: !!e.target.value.trim() })}></textarea>
-            <button
-              className='button align--right'
-              disabled={!this.state.enablePost}
-              onClick={this.handleSavePost}>POST</button>
+          <div className='flex--column centered'>
+            <div className='card--bounded flex--column'>
+              <textarea
+                ref={this.postTextInput}
+                name='postContent'
+                placeholder='Que quieres compartir?'
+                className='margin--bottom flex-item'
+                onChange={(e) => this.setState({ enablePost: !!e.target.value.trim() })}></textarea>
+              <button
+                className='button flex-item align--right'
+                disabled={!this.state.enablePost}
+                onClick={this.handleSavePost}>POST</button>
+            </div>
           </div>
         }
-        {this.renderPosts()}
+        <div className='flex--column centered'>
+          {this.renderPosts()}
+        </div>
       </div>
     );
   }

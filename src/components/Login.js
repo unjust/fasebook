@@ -35,7 +35,7 @@ export default class Login extends React.Component {
       errors.username = 'El campo de usuario no puede estar en blanco';
     }
     if (password.trim() === '') {
-      errors.password = 'El campo de clave no puede estar en blanco';
+      errors.password = 'El campo de contraseña no puede estar en blanco';
     }
     if (Object.keys(errors).length) {
       this.setState({ errors });
@@ -50,7 +50,7 @@ export default class Login extends React.Component {
     return (
       <div>
         { shouldRedirect ? (<Redirect to="/home" />) :
-          (<div className='card'>
+          (<div id='loginCard' className='card'>
             <h1>Fasebook</h1>
             <div className='margin--vert' >
               <label htmlFor="username">Usario</label>
@@ -60,7 +60,7 @@ export default class Login extends React.Component {
               }
             </div>
             <div className='margin--vert' >
-              <label htmlFor="password">Clave</label>
+              <label htmlFor="password">Contraseña</label>
               <input type="password" name="password" ref={this.passwordInput}></input>
               { this.state.errors.password
                 && <div className="text--error">{ this.state.errors.password }</div>
