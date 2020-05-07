@@ -8,8 +8,8 @@ const Post = (props) =>
 
     { props.isEditable &&
       <div className='flex-item align--right'>
-        <button className="link--controls" onClick={() => props.onEdit(props._id, 'somememme')}>Editar</button>
-        <button className="link--controls" onClick={() => props.onDelete(props._id)}>Eliminar</button>
+        <button className="link--controls" onClick={() => props.onEdit(props.id, 'somememme')}>Editar</button>
+        <button className="link--controls" onClick={() => props.onDelete(props.id)}>Eliminar</button>
       </div>
     }
   </div>)

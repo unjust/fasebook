@@ -44,7 +44,7 @@ export default class ProfilePage extends React.Component {
   handleDeletePost(postId) {
     postsApi.deletePost(this.props.userId, postId)
       .then(() => {
-        const posts = this.state.posts.filter((p) => p._id !== postId);
+        const posts = this.state.posts.filter((p) => p.id !== postId);
         this.setState({ posts });
       })
       .catch(() => {
@@ -57,7 +57,7 @@ export default class ProfilePage extends React.Component {
       nodeArr.push(
         <Post 
           {...p}
-          key={p._id}
+          key={p.id}
           isEditable={this.props.isOwner || undefined}
           onEdit={this.handleEditPost}
           onDelete={this.handleDeletePost} />
