@@ -8,13 +8,13 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
+        <Route path="/login" component={Login} />
         <ProtectedRoute 
-          path="/home" 
+          path="/" 
           render={(props) =>
             <ProfilePage {...props} isOwner userId={sessionStorage.getItem('userId')} />
           }
         />
-        <Route path="/login" component={Login} />
       </Switch>
     </BrowserRouter>
   )
