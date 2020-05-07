@@ -22,24 +22,18 @@ const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 
 app.use(bodyParser.json());
 
-// if (process.env.NODE_ENV !== 'production') {
-//   const publicPath = path.join(__dirname, '..', 'build');
-//   console.log(publicPath);
-//   app.use(express.static(publicPath));
-//   console.log(publicPath);
-//   app.get('*', (req, res) => {
-//     res.sendFile(path.join(publicPath, 'index.html'));
-//   });
-// }
 
-// if (process.env.NODE_ENV === 'production') {
-//   app.use(express.static(__dirname));
-//   app.use(express.static(path.join(__dirname, 'build')));
- 
-//   app.get('/*', function (req, res) {
-//     res.sendFile(path.join(__dirname, 'build', 'index.html'));
-//   });
-// }
+if (process.env.NODE_ENV === 'production') {
+  console.log('were on production!!!');
+
+  const buildDir = path.join(process.cwd(), 'build');
+  app.use(express.static(buildDir));
+
+  const indexPath = path.join(buildDir, 'index.html')
+  app.get(/^((?!api).)*$/, function (req, res) {
+    res.sendFile(indexPath);
+  });
+}
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
