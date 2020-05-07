@@ -50,7 +50,7 @@ export default class Login extends React.Component {
     return (
       <div>
         { shouldRedirect ? (<Redirect to="/home" />) :
-          (<div id='loginCard' className='card'>
+          (<div id='login-card' className='card'>
             <h1>Fasebook</h1>
             <div className='margin--vert' >
               <label htmlFor="username">Usario</label>
