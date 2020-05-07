@@ -1,114 +1,124 @@
 const express = require('express');
-const nano = require('nano')('http://admin:couchdb!@localhost:5984');
 const jwt = require('jsonwebtoken');
-
 const jwtMiddleware = require('express-jwt');
-const path = require('path');
 const bodyParser = require('body-parser');
-const dotenv = require('dotenv');
+const path = require('path');
 
-const DB = 'fasebook';
+const { 
+  createPost,
+  getPostsForUser, 
+  updatePost,
+  deletePost,
+  getUser
+} = require('./db/databaseFunctions');
 
-const addUsers = function() {
-  const users = [
-    {
-      username: 'ivy',
-      password: 'ivy'
-    },
-    {
-      username: 'ladyGaga',
-      password: 'lab'
-    }
-  ];
-  db.bulk( { docs: users }).then((body) => {
-    console.log('users added to db', body);
-  });
-}
+const app = express();
 
 if (process.env.NODE_ENV !== 'production') {
+  const dotenv = require('dotenv');
   dotenv.config();
 }
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 
-async function setupDatabase() {
-  const response = await nano.db.list().catch((e) => {
-    console.log('nano db list failed', e);
-  });
-  if (response.indexOf(DB) === -1) {
-    const success = await nano.db.create('fasebook').catch((e) => {
-      console.log('create db error', e);
-    });
-    console.log('db created', success);
-    addUsers();
-  }
-}
-
-setupDatabase();
-const db = nano.use(DB);
-const app = express();
-app.listen(process.env.PORT || 8080);
-// app.use(express.static(path.join(__dirname, 'public')));
-// app.all('*', requireAuthentication., loadUser)
 app.use(bodyParser.json());
 
-app.get('/ping', function (req, res) {
-  return res.send('pong');
- });
 
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'yo.html'));
-});
+if (process.env.NODE_ENV === 'production') {
+  console.log('were on production!!!');
 
+  const buildDir = path.join(process.cwd(), 'build');
+  app.use(express.static(buildDir));
 
-app.post('/api/auth', function(req, res) {
-  const { username, password } = req.body;
-  const q = {
-    selector: {
-      username,
-      password
-    }
-  }
-  db.find(q).then((resp) => {
-    if (resp.docs.length) {
-      const { _id } = resp.docs[0];
-      const accessToken = jwt.sign( { _id }, accessTokenSecret);
-      res.json({ userId: _id, accessToken });
-    } else {
-      res.json({ error: 'username or password incorrect'});
-    }
+  const indexPath = path.join(buildDir, 'index.html')
+  app.get(/^((?!api).)*$/, function (req, res) {
+    res.sendFile(indexPath);
   });
+}
+
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+   console.log('Server is up!');
 });
 
-app.post('/api/post', 
-  jwtMiddleware( { secret: accessTokenSecret }),
-  function(req, resp) {
-    const { post, userId } = req.body;
-    if (req.user && req.user._id === userId) {
-      const postedDate = Date.now();
-      const type = 'post';
-      db.insert({ post, type, postedDate, userId }, (body) => {
-        resp.sendStatus(200);
-      });
-    }
-  }
-);
+const isUserInToken = (req, userId) => req.user && req.user.id === userId;
+
+app.post('/api/auth', function(req, resp) {
+  const { username, password } = req.body;
+  getUser(username, password)
+    .then((user) => {
+      console.log(user);
+      if (user) {
+        const { id } = user;
+        const accessToken = jwt.sign( { id }, accessTokenSecret);
+        resp.json({ userId: id, accessToken });
+      } else {
+        resp.json({ error: 'username or password incorrect'});
+      }
+    })
+    .catch((err) => console.log('error with auth attempt', err));
+});
 
 app.get('/api/posts/:userId', 
   jwtMiddleware( { secret: accessTokenSecret }),
   function(req, resp) {
     const { userId } = req.params;
-    if (req.user && userId) { // we'd also check for permissions here
-      const q = {
-        selector: {
-          userId,
-          type: 'post'
-        },
-        fields: [ 'postedDate', 'post', '_id' ]
-        // sort: [{ 'postedDate': 'asc'}]
+    if (req.user && userId) {
+      getPostsForUser(userId).then((docs) => {
+        resp.send(docs);
+      })
+      .catch((err) => console.log('error getting posts', err));
+    } else {
+      resp.sendStatus(401);
+    }
+  }
+);
+
+app.post('/api/post', 
+  jwtMiddleware( { secret: accessTokenSecret }),
+  function(req, resp) {
+    const { post, userId } = req.body;
+    if (isUserInToken(req, userId)) {
+      const newPost = { 
+        post,
+        postedDate: Date.now(), 
+        userId 
       };
-      db.find(q).then((res) => {
-        resp.json(res.docs);
-      }).catch((err) => console.log(err));
+      createPost(newPost)
+        .then((id) => {
+          resp.status(200).send({ id, ...newPost});
+        })
+        .catch((err) => console.log(err));
+    }
+  }
+);
+
+app.put('/api/post', 
+  jwtMiddleware( { secret: accessTokenSecret }),
+  function(req, resp) {
+    const { post, userId, postId } = req.body;
+    if (isUserInToken(req, userId)) {
+      const editDate = Date.now();
+      updatePost(
+        postId, 
+        { post, editDate })
+        .then(() => resp.status(200).send({ post }));
+    } else {
+      resp.status(401);
+    }
+  }
+);
+
+app.delete('/api/post/:postId/:userId', 
+  jwtMiddleware( { secret: accessTokenSecret }),
+  function(req, resp) {
+    const { postId, userId } = req.params;
+    if (isUserInToken(req, userId)) {
+      deletePost(postId).then(() => {
+        resp.sendStatus(200);
+      })
+      .catch((err) => {
+        console.log('there was an err', err);
+      });
     } else {
       resp.sendStatus(401);
     }
@@ -116,6 +126,5 @@ app.get('/api/posts/:userId',
 );
 
 module.exports = {
-  db,
   app
-};
+}

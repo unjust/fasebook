@@ -1,12 +1,12 @@
 const firebase = require('firebase');
 require ('firebase/firestore');
-require ('firebase/functions');
 
 if (process.env.NODE_ENV !== 'production') {
   const dotenv = require('dotenv');
   dotenv.config();
 }
 
+// may not need all this config
 const config = {
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
@@ -19,11 +19,9 @@ const config = {
 
 firebase.initializeApp(config);
 const db = firebase.firestore();
-const functions = firebase.functions();
 
 module.exports = {
   db,
-  functions,
   Timestamp: firebase.firestore.Timestamp
 } 
 

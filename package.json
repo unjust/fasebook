@@ -23,12 +23,12 @@
     "react-scripts": "3.4.1"
   },
   "scripts": {
-    "server": "nodemon server/index.js",
+    "server": "nodemon server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start:app": "react-scripts start",
-    "start": "node server/index.js",
+    "start:dev": "react-scripts start",
+    "start": "node server.js",
     "heroku-postbuild": "yarn install && yarn run build"
   },
   "eslintConfig": {
