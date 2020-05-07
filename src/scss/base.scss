@@ -1,9 +1,11 @@
 @import 'normalize';
 @import 'colors';
-
+@import 'fonts';
+@import 'flex';
+@import 'card';
 
 body {
-  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-family: 'Roboto-Bold', Fallback, sans-serif;
   font-size:1.4rem;
   color: $dark-grey;
 }
@@ -18,7 +20,16 @@ body {
     width: 800px;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 3rem;
   }
+}
+
+h1, h2, h2 {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: .5rem;
 }
 
 link {
@@ -69,11 +80,52 @@ input[type='text'], input[type='password'] {
 
 label {
   display: block;
+  margin-bottom:.5rem;
 }
+
 .text--error {
   color: red;
   font-size: 1rem;
   line-height: 2;
 }
+
+#login-card {
+  max-width: 400px;
+  margin-left:auto;
+  margin-right: auto;
+  padding: 2rem ;
+}
+
+
+body {
+  background-image: url("https://i.pinimg.com/originals/ef/04/13/ef0413d8b7a3bbc39431a27e58f08251.jpg");
+}
+
+.page {
+  background: white;
+}
+
+#profile-head {
+  padding: 2rem;
+}
+
+.display--block {
+  display: block;
+}
+.img--thumbnail {
+  width: 120px;
+  height: 120px;
+}
+
+.text--muted {
+  color: grey;
+  font-size: 1.25rem;
+}
+
+.text--date {
+  color: $dark-grey;
+  font-size: 1rem;
+}
+
 
 

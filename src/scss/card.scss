@@ -1,0 +1,17 @@
+
+.card {
+  background: white;
+  border: 1px solid $grey;
+  padding: 1rem;
+  margin: 1rem 0rem;
+}
+
+.card--borderless {
+  @extend .card;
+  border: 0px;
+}
+
+.card--bounded {
+  @extend .card;
+  width: 80%;
+}
