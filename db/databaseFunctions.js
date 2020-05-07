@@ -55,11 +55,11 @@ const createPost = (postObject) => {
 async function updatePost(postId, update) {
   const postsRef = db.collection('posts');
   try {
-    const doc = await postsRef.where('postId', '==', postId).get()[0];
+    const doc = await postsRef.doc(postId).get();
     const updatedDoc = Object.assign(doc.data(), update);
     postsRef.doc(doc.id).set(updatedDoc, { merge: true })
       .then((res) => {
-        console.log('doc updated successfully', res);
+        console.log('doc updated successfully');
         return res;
       })
       .catch((err) => {
