@@ -70,7 +70,7 @@ export default class Login extends React.Component {
               && <div className="text--error">{ this.state.errors.auth }</div>
             }
 
-            <button onClick={this.validate}>Login</button>
+            <button className="button" onClick={this.validate}>Login</button>
           </div>)
         }
       </div>

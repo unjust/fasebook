@@ -75,16 +75,20 @@ export default class ProfilePage extends React.Component {
             <h1 className='flex-item'>CRISTIAN CASTRO</h1>
           </div>
         </div>
-       <div className='card flex--column'>
-          <textarea
-            ref={this.postTextInput}
-            name='postContent'
-            placeholder='Que quieres compartir?'
-            className='margin--bottom'></textarea>
-          <button
-            className='align--right'
-            onClick={this.handleSavePost}>POST</button>
-        </div>
+      { this.props.isOwner &&
+        <div className='card flex--column'>
+            <textarea
+              ref={this.postTextInput}
+              name='postContent'
+              placeholder='Que quieres compartir?'
+              className='margin--bottom'
+              onChange={(e) => this.setState({ enablePost: !!e.target.value.trim() })}></textarea>
+            <button
+              className='button align--right'
+              disabled={!this.state.enablePost}
+              onClick={this.handleSavePost}>POST</button>
+          </div>
+        }
         {this.renderPosts()}
       </div>
     );

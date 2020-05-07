@@ -18,7 +18,7 @@ const Post = (props) =>
 Post.propTypes = {
   id: PropTypes.string.isRequired,
   post: PropTypes.string,
-  postedDate: PropTypes.string,
+  postedDate: PropTypes.number,
   isEditable: PropTypes.bool,
   onDelete: PropTypes.func,
   onEdit: PropTypes.func
