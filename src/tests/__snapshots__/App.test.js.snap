@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App component matches snapshot 1`] = `
+<div>
+  <div
+    className="card"
+  >
+    <h1>
+      Fasebook
+    </h1>
+    <div
+      className="margin--vert"
+    >
+      <label
+        htmlFor="username"
+      >
+        Usario
+      </label>
+      <input
+        name="username"
+        type="text"
+      />
+    </div>
+    <div
+      className="margin--vert"
+    >
+      <label
+        htmlFor="password"
+      >
+        Clave
+      </label>
+      <input
+        name="password"
+        type="password"
+      />
+    </div>
+    <button
+      className="button"
+      onClick={[Function]}
+    >
+      Login
+    </button>
+  </div>
+</div>
+`;
