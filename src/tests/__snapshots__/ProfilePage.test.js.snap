@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProfilePage component renders the component that matches the snapshot 1`] = `
+<div>
+  <div
+    className="card"
+  >
+    <div
+      className="flex"
+      id="profile-head"
+    >
+      <div
+        className="flex-item--shrink"
+      >
+        <img
+          alt="your fase"
+          className="img--thumbnail"
+          src="https://scontent-bos3-1.xx.fbcdn.net/v/t1.0-9/39992261_1780642188639098_3104100502657302528_n.jpg?_nc_cat=103&_nc_sid=85a577&_nc_ohc=PeMsRB9nnxwAX_kIRHZ&_nc_ht=scontent-bos3-1.xx&oh=898a95c20b993199c04c7a53325f3f5c&oe=5ED4FF45"
+        />
+      </div>
+      <h1
+        className="flex-item"
+      >
+        CRISTIAN CASTRO
+      </h1>
+    </div>
+  </div>
+  <div
+    className="card flex--column"
+  >
+    <textarea
+      className="margin--bottom"
+      name="postContent"
+      onChange={[Function]}
+      placeholder="Que quieres compartir?"
+    />
+    <button
+      className="button align--right"
+      disabled={true}
+      onClick={[Function]}
+    >
+      POST
+    </button>
+  </div>
+  <div />
+</div>
+`;
+
+exports[`ProfilePage testRenderer renders the testRenderer that matches the snapshot 1`] = `
+<div>
+  <div
+    className="card"
+  >
+    <div
+      className="flex"
+      id="profile-head"
+    >
+      <div
+        className="flex-item--shrink"
+      >
+        <img
+          alt="your fase"
+          className="img--thumbnail"
+          src="https://scontent-bos3-1.xx.fbcdn.net/v/t1.0-9/39992261_1780642188639098_3104100502657302528_n.jpg?_nc_cat=103&_nc_sid=85a577&_nc_ohc=PeMsRB9nnxwAX_kIRHZ&_nc_ht=scontent-bos3-1.xx&oh=898a95c20b993199c04c7a53325f3f5c&oe=5ED4FF45"
+        />
+      </div>
+      <h1
+        className="flex-item"
+      >
+        CRISTIAN CASTRO
+      </h1>
+    </div>
+  </div>
+  <div
+    className="card flex--column"
+  >
+    <textarea
+      className="margin--bottom"
+      name="postContent"
+      onChange={[Function]}
+      placeholder="Que quieres compartir?"
+    />
+    <button
+      className="button align--right"
+      disabled={true}
+      onClick={[Function]}
+    >
+      POST
+    </button>
+  </div>
+  <div />
+</div>
+`;

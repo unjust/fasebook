@@ -19,7 +19,8 @@ export default class ProfilePage extends React.Component {
     postsApi.getPosts(this.props.userId)
       .then((posts) => {
         this.setState({ posts });
-      });
+      })
+      .catch(() => {});
   }
 
   handleSavePost() {
@@ -33,8 +34,10 @@ export default class ProfilePage extends React.Component {
 
   handleEditPost(postId, newText) {
     postsApi.editPost(this.props.userId, postId, newText)
-      .then()
+      // eslint-disable-next-line no-console
+      .then(() => console.log('didnt implement'))
       .catch(() => {
+        // eslint-disable-next-line no-alert
         alert('an error ocurred');
       });
   }

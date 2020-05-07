@@ -3,7 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import TestRenderer from 'react-test-renderer';
 import App from '../App';
 
-describe('App component', () => {
+describe.only('App component', () => {
   it('renders a BrowserRouter component', () => {
     const app = TestRenderer.create(<App />);
     const instance = app.root;

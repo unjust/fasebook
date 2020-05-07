@@ -7,16 +7,14 @@ import * as authApi from '../api/auth';
 
 describe('ProtectedRoute component', () => {
   jest.mock('../api/auth');
-  const renderMock = jest.fn();
+  const renderMock = jest.fn(() => <div></div>);
 
   it('renders the component if logged in', () => {
     authApi.validateUserToken = jest.fn(() => true);
     const component = TestRenderer.create(
-      <div>
-        <BrowserRouter>
-          <ProtectedRoute render={renderMock} component={ProfilePage} />
-        </BrowserRouter>
-      </div>
+      <BrowserRouter>
+        <ProtectedRoute render={renderMock} component={ProfilePage} />
+      </BrowserRouter>
     );
     expect(() => component.root.findByType(ProfilePage)).not.toThrowError();
   });
@@ -24,11 +22,9 @@ describe('ProtectedRoute component', () => {
   it('redirects if not logged in', () => {
     authApi.validateUserToken = jest.fn(() => false);
     const component = TestRenderer.create(
-      <div>
         <BrowserRouter>
           <ProtectedRoute render={renderMock} component={ProfilePage} />
         </BrowserRouter>
-      </div>
     );
     expect(() => component.root.findByType(Redirect)).not.toThrowError();
   });
