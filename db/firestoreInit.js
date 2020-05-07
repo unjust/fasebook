@@ -1,8 +1,8 @@
+const dotenv = require('dotenv');
 const firebase = require('firebase');
-require ('firebase/firestore');
+require('firebase/firestore');
 
 if (process.env.NODE_ENV !== 'production') {
-  const dotenv = require('dotenv');
   dotenv.config();
 }
 
@@ -23,6 +23,4 @@ const db = firebase.firestore();
 module.exports = {
   db,
   Timestamp: firebase.firestore.Timestamp
-} 
-
-
+};

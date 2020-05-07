@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { formatDate } from '../utils/formatters';
 
-const Post = (props) => 
+const Post = (props) =>
   (<div className='card flex flex--column'>
     <div className='flex-item text--muted'>{formatDate(props.postedDate)}</div>
     <div>{props.post}</div>
@@ -12,6 +13,15 @@ const Post = (props) =>
         <button className="link--controls" onClick={() => props.onDelete(props.id)}>Eliminar</button>
       </div>
     }
-  </div>)
+  </div>);
+
+Post.propTypes = {
+  id: PropTypes.string.isRequired,
+  post: PropTypes.string,
+  postedDate: PropTypes.string,
+  isEditable: PropTypes.bool,
+  onDelete: PropTypes.func,
+  onEdit: PropTypes.func
+};
 
 export default Post;

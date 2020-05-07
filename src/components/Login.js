@@ -9,11 +9,10 @@ export default class Login extends React.Component {
     this.passwordInput = React.createRef();
     this.validate = this.validate.bind(this);
     const shouldRedirect = validateUserToken();
-    this.state = { 
+    this.state = {
       shouldRedirect,
       errors: {}
     };
-
   }
 
   sendLogin(user, password) {
@@ -21,16 +20,16 @@ export default class Login extends React.Component {
       const isValid = validateUserToken();
       this.setState({ shouldRedirect: isValid });
       if (!isValid) {
-        this.setState( { errors: { auth: resp }})
+        this.setState({ errors: { auth: resp } });
       }
     });
   }
 
-  validate(e) {
+  validate() {
     const user = this.usernameInput.current.value;
     const password = this.passwordInput.current.value;
 
-    let errors = {};
+    const errors = {};
 
     if (user.trim() === '') {
       errors.username = 'El campo de usuario no puede estar en blanco';
@@ -41,13 +40,13 @@ export default class Login extends React.Component {
     if (Object.keys(errors).length) {
       this.setState({ errors });
     } else {
-      this.setState({ errors })
+      this.setState({ errors });
       this.sendLogin(user, password);
     }
   }
 
   render() {
-    const shouldRedirect = this.state.shouldRedirect;
+    const { shouldRedirect } = this.state;
     return (
       <div>
         { shouldRedirect ? (<Redirect to="/home" />) :
@@ -56,25 +55,25 @@ export default class Login extends React.Component {
             <div className='margin--vert' >
               <label htmlFor="username">Usario</label>
               <input type="text" name="username" ref={this.usernameInput}></input>
-              { this.state.errors.username &&
-                <div className="text--error">{ this.state.errors.username }</div>
+              { this.state.errors.username
+                && <div className="text--error">{ this.state.errors.username }</div>
               }
             </div>
             <div className='margin--vert' >
               <label htmlFor="password">Clave</label>
               <input type="password" name="password" ref={this.passwordInput}></input>
-              { this.state.errors.password &&
-                <div className="text--error">{ this.state.errors.password }</div>
+              { this.state.errors.password
+                && <div className="text--error">{ this.state.errors.password }</div>
               }
             </div>
-            { this.state.errors.auth &&
-              <div className="text--error">{ this.state.errors.auth }</div>
+            { this.state.errors.auth
+              && <div className="text--error">{ this.state.errors.auth }</div>
             }
 
             <button onClick={this.validate}>Login</button>
           </div>)
         }
       </div>
-    )
+    );
   }
 }
