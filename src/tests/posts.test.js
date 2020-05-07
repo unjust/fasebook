@@ -12,14 +12,14 @@ describe('posts api tests', () => {
   describe('getPosts', () => {
     const endpoint = `/api/posts/${userId}`;
 
-    it('fetches posts of a specific user', done => {
+    it('fetches posts of a specific user', (done) => {
       getPosts(userId);
       expect(axios.get).toHaveBeenCalledWith(endpoint);
       done();
     });
 
     it('returns the array of posts sent by the server', async () => {
-      const fakePosts = [ { postContent: 'hola test', userId } ];
+      const fakePosts = [{ postContent: 'hola test', userId }];
       axios.get.mockResolvedValue(
         { status: 200, data: fakePosts }
       );
@@ -37,20 +37,20 @@ describe('posts api tests', () => {
   });
 
   describe('savePost', () => {
-    const endpoint = `/api/post`;
+    const endpoint = '/api/post';
 
-    it('sends the post content and userId via the api', done => {
+    it('sends the post content and userId via the api', (done) => {
       const post = 'my first sony';
       savePost(userId, post);
       expect(axios.post).toHaveBeenCalledWith(endpoint, { post, userId });
       done();
     });
-  
+
     it('returns the error message from the server', async () => {
-      const errObj = { error: 'mal'};
+      const errObj = { error: 'mal' };
       axios.post.mockRejectedValue(errObj);
       const result = await savePost(userId, 'mymymy');
       expect(result).toEqual(errObj.error);
     });
   });
-})
+});

@@ -1,22 +1,21 @@
-import { 
+import jwt from 'jsonwebtoken';
+import axios from 'axios';
+import {
   accessTokenSecret,
   tokenSessionStorageKey,
   authenticateUser,
   authData,
-  validateUserToken } from '../api/auth';
-import jwt from 'jsonwebtoken';
-import axios from 'axios';
+  validateUserToken
+} from '../api/auth';
 
 describe('auth module tests', () => {
-
   describe('validateUserToken', () => {
-
     afterEach(() => {
-      sessionStorage.clear()
+      sessionStorage.clear();
     });
 
     it('returns true if there is a valid token', () => {
-      const dummyToken = jwt.sign({ username: 'testuser'}, accessTokenSecret);
+      const dummyToken = jwt.sign({ username: 'testuser' }, accessTokenSecret);
       sessionStorage.setItem(tokenSessionStorageKey, dummyToken);
       expect(validateUserToken()).toBe(true);
     });
@@ -39,7 +38,7 @@ describe('auth module tests', () => {
       axios.post.mockReset();
     });
 
-    it('calls the auth api with the appropriate params', done => {
+    it('calls the auth api with the appropriate params', (done) => {
       authenticateUser(username, password);
       expect(axios.post).toHaveBeenCalledWith('/api/auth', { username, password });
       done();
@@ -58,4 +57,4 @@ describe('auth module tests', () => {
       );
     });
   });
-})
+});

@@ -1,7 +1,9 @@
 module.exports = { 
   "extends": ["plugin:react/recommended", "airbnb-base"],
+  "plugins": ["jest"],
   "env": {
-    "browser": true
+    "browser": true,
+    "jest/globals": true
   },
   "parserOptions": {
     "ecmaFeatures": {
